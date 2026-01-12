@@ -12,6 +12,15 @@ class Tensor:
     
     def __repr__(self):
         return f"Tensor({self.data}), requires_grad={self.requires_grad}"
+    
+    def _broadcast(self, other):
+        """need this only for binary ops
+        rules:
+            start from rightmost side toward left, two dims are compactible if they are -
+            1. equal
+            2. one of them is 1
+        """
+        pass
 
     def backward(self, grad = None):
         if not self.requires_grad:
@@ -33,7 +42,6 @@ class Tensor:
         for tensor, g in zip(self._ctx.saved_tensors, grads): # topo sort is probably safer
             if tensor.requires_grad:
                 tensor.backward(g)
-
 
 class Context:
     def __init__(self, op):
